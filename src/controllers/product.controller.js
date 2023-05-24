@@ -1,4 +1,5 @@
 productModel = require('../models/product.model')
+const { unlink } = require('node:fs')
 
 const productController = {
   get:(req,res)=>{
@@ -7,7 +8,7 @@ const productController = {
       return res.status(200).send({message:'succes',data:result})
     })
     .catch((err)=>{
-      return res.status(500).send({message:error})
+      return res.status(500).send({message:err})
     })
   },
   getDetail:(req,res)=>{
@@ -53,10 +54,22 @@ const productController = {
     const request = {
       ...req.body,
       id:req.params.id,
+      file: req.files
     }
+    console.log(request)
     return productModel.update(request)
     .then((result)=>{
-      return res.status(201).send({message:'success',data:result})
+      if (typeof result.oldImages != "undefined") {
+        for (let i = 0; i < result.oldImages.length; i++) {
+          console.log(result.oldImages[i].filename)
+          unlink(`public/uploads/images/${result.oldImages[i].filename}`, (err) => {
+              console.log(`successfully deleted ${result.oldImages[i].filename}`)})}
+              return res.status(201).send({ message: "succes", data: result })
+        //return res.status(200).send({message : "Updating data product by id success",data:result})
+      } else {
+        return res.status(400).send({ message: "product not found" });
+      }
+      //return res.status(201).send({message:'success',data:result})
     })
     .catch((error)=>{
       return res.status(500).send({message:error})
@@ -65,7 +78,14 @@ const productController = {
   remove:(req,res)=>{
     return productModel.remove(req.params.id)
     .then((result)=>{
-      return res.status(201).send({message:'success delete',data:result})
+      console.log(result[0].filename)
+      for (let i = 0; i < result.length; i++) {
+        unlink(`public/uploads/images/${result[i].filename}`, (err) => {
+          if (err) throw err;
+          // console.log(`Product has been deleted! ${result[i].filename}`);
+      }); 
+      }
+      return res.status(201).send({message:'success deleted',data:result})
     })
     .catch((error)=>{
       return res.status(500).send({message:error})

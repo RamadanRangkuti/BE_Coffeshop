@@ -5,16 +5,18 @@ const router = require('./src/routes/index')
 //manggil helper
 const db = require('./helper/connection')
 const{ v4: uuidv4 } = require('uuid') 
-//const cors = require('cors')
+const cors = require('cors')
 
 //mnerima application/www.form-encoded
 app.use(urlencoded({extended:true}))
 app.use(json())
 
+app.use(cors())
+app.use(express.static('public'))
+
 // app.use(cors({
 //   origin : ['ramadanrangkuti.com']
 // }))
-
 //prefix
 app.use('/api/v1/', router)
 
@@ -134,6 +136,6 @@ app.get('*',(req,res)=>{
 })
 
 
-app.listen(3000, (req,res)=> {
-  console.log('backend succesfully running on port 3000')
+app.listen(5000, (req,res)=> {
+  console.log('backend succesfully running on port 5000')
 })

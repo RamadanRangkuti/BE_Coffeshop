@@ -8,7 +8,7 @@ const authModel = {
     return new Promise((resolve, reject) => {
       db.query(`SELECT * FROM users WHERE username=$1`,[username],(err,result)=>{
         if(err){
-          return reject(err,message)
+          return reject(err.message)
         }else{
           if(result.rows.length===0){
             return reject('username/password salah')

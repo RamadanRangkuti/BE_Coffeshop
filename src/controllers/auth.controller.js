@@ -15,7 +15,12 @@ const authController = {
       },JWT_PRIVATE_KEY,{expiresIn : "1d"},(err,token)=>{
         return res.status(200).send({message:'succes',data: {
           token,
-          user : result
+          user : {
+            id:result.id, 
+            fullname:result.fullname, 
+            img:result.img,
+            role:result.role, 
+            username: result.username}
         }})
       })
     })
@@ -36,7 +41,7 @@ const authController = {
           }else{
             const request = {
               username : req.body.username,
-              password : hash
+              password : hash,
             }
             return authModel.register(request)
             .then((result)=>{

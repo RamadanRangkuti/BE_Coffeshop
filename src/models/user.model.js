@@ -2,7 +2,7 @@ const db =  require('../../helper/connection')
 const{ v4: uuidv4 } = require('uuid') 
 
 const userModel = {
-  query:(queryParams,sortType='asc',limit=2,page=1)=>{
+  query:(queryParams,sortType='asc',limit=10,page=1)=>{
     if(queryParams.search && queryParams.cat){
       return `WHERE username LIKE '%${queryParams.search}%' AND email LIKE '%${queryParams.cat}%' ORDER BY username ${sortType} LIMIT ${limit}`
     }else if(queryParams.search || queryParams.cat){
